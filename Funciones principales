@@ -1,0 +1,45 @@
+#----M1---
+def M1GD(i):
+    pin12.write_digital(0)
+    pin13.write_analog(i)
+    
+def M1GI(i):
+    pin12.write_analog(i)
+    pin13.write_digital(0)
+
+def M1STOP():
+    pin12.write_digital(0)
+    pin13.write_digital(0)
+    
+#----M2---
+def M2GD(i):
+    pin14.write_digital(0)
+    pin15.write_analog(i)
+    
+def M2GI(i):
+    pin14.write_analog(i)
+    pin15.write_digital(0)
+
+def M2STOP():
+    pin14.write_digital(0)
+    pin15.write_digital(0)
+    
+def Forward(i):
+    M1GD(i)
+    M2GI(i)
+    
+def Backward(i):
+    M1GI(i)
+    M2GD(i)
+    
+def STOP():
+    M1STOP()
+    M2STOP()
+    
+def TurnLeft(i):
+    M1GD(i)
+    M2GD(i)
+    
+def TurnRight(i):
+    M1GI(i)
+    M2GI(i)
