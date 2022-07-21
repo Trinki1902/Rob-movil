@@ -1,0 +1,75 @@
+						#Line follower
+#Imports
+from microbit import *
+import utime 
+import time
+
+#----------------Functions for the motors-----------------
+#----M1---
+def M1ACW(i):
+    pin12.write_digital(0)
+    pin13.write_analog(i)
+    
+def M1CW(i):   
+    pin12.write_analog(i)
+    pin13.write_digital(0)
+
+def M1STOP():
+    pin12.write_digital(0)
+    pin13.write_digital(0)
+    
+#----M2---
+def M2CW(i):
+    pin14.write_digital(0)
+    pin15.write_analog(i)
+    
+def M2ACW(i):
+    pin14.write_analog(i)
+    pin15.write_digital(0)
+
+def M2STOP():
+    pin14.write_digital(0)
+    pin15.write_digital(0)
+    
+def Forward(i):
+    M1ACW(i)
+    M2ACW(i)
+    
+def Backward(i):
+    M1CW(i)
+    M2CW(i)
+    
+def STOP():
+    M1STOP()
+    M2STOP()
+    
+def TURNRIGHT(i):
+    M2ACW(0)
+    M1ACW(i)
+    
+def TURNLEFT(i):
+    M1CW(i/2)
+    M2ACW(i)
+
+
+out = 0         #This variable will allow us to know if the robot is above or outside the line
+                #Will begin above the line
+                
+TURNLEFT(300)
+
+
+while True:
+    if pin0.is_touched() == 1 and out == 0:                  #Detect white line
+        TURNRIGHT(300)
+        
+    if pin0.is_touched() == 0 and out == 0:
+        out = 1
+        TURNLEFT(300)
+        
+    if pin0.is_touched() == 0 and out == 1:
+        TURNLEFT(300)
+        
+    if pin0.is_touched() == 1 and out == 1:
+        TURNRIGHT(300)
+        out = 0
+        
