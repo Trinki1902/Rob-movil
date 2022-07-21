@@ -1,0 +1,131 @@
+#Imports
+from microbit import *
+import radio
+radio.config(group=2)
+radio.on()
+
+#The PWM signal has to be write over the pin that has to write a 1
+
+
+#----------------Functions for the motors-----------------
+#----M1---
+def M1GD(i):
+    pin12.write_digital(0)
+    pin13.write_analog(i)
+    
+def M1GI(i):
+    pin12.write_analog(i)
+    pin13.write_digital(0)
+
+def M1STOP():
+    pin12.write_digital(0)
+    pin13.write_digital(0)
+    
+#----M2---
+def M2GD(i):
+    pin14.write_digital(0)
+    pin15.write_analog(i)
+    
+def M2GI(i):
+    pin14.write_analog(i)
+    pin15.write_digital(0)
+
+def M2STOP():
+    pin14.write_digital(0)
+    pin15.write_digital(0)
+    
+def Forward(i):
+    M1GD(i)
+    M2GI(i)
+    
+def Backward(i):
+    M1GI(i)
+    M2GD(i)
+    
+def STOP():
+    M1STOP()
+    M2STOP()
+    
+def TurnLeft(i):
+    M1GD(i)
+    M2GD(i)
+    
+def TurnRight(i):
+    M1GI(i)
+    M2GI(i)
+    
+
+
+#Variables used:
+inclinationX = 0
+inclinationY = 0
+inclinationZ = 0
+buttomA = 0
+buttomB = 0
+
+values = []  #empty list
+while True: 
+    message = radio.receive()    #Receiving the message from the other microbit
+    if message:
+        #Spliting the message for obtaining the instructions
+        values = message.split()
+        inclinationX = float(values[0])
+        inclinationY = float(values[1])
+        inclinationZ = float(values[2])
+        buttomA = float(values[3])
+        buttomB = float(values[4])
+       
+        #We will perform diferent action depending of the inclination values
+        if buttomA == True:
+            #Move forward
+            if inclinationY < -200:
+                if abs(inclinationY) > 700:
+                    inclinationY = 700
+                Forward((abs(inclinationY) -200) * 2)
+                display.show(Image( '00500:'
+                                    '00600:'
+                                    '77777:'
+                                    '08880:'
+                                    '00900')) 
+                                    
+            #move backwards
+            if inclinationY > 200:
+                if inclinationY > 700:
+                    inclinationY = 700
+                Backward((inclinationY -200) * 2)
+                display.show(Image( '00900:'
+                                    '08880:'
+                                    '77777:'
+                                    '00600:'
+                                    '00500'))
+            if inclinationY < 200 and inclinationY > -200 :
+                STOP()
+                display.show(Image( '00000:'
+                                    '08080:'
+                                    '08080:'
+                                    '08080:'
+                                    '00000')) 
+            
+            #move to the left
+            if inclinationX > 200:
+                if inclinationX > 700:
+                    inclinationX = 700
+                TurnLeft((inclinationX -200) * 2)
+                display.show(Image( '00000:'
+                                    '00000:'
+                                    '00009:'
+                                    '00000:'
+                                    '00000')) 
+                                    
+            #move to the right
+            if inclinationX < -200:
+                if abs(inclinationX) > 700:
+                    inclinationX = 700
+                TurnRight((abs(inclinationX) -200) * 2)
+                display.show(Image( '00000:'
+                                    '00000:'
+                                    '90000:'
+                                    '00000:'
+                                    '00000')) 
+        if buttomA == False:
+            STOP()
